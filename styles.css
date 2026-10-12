@@ -1,0 +1,100 @@
+:root{
+  --bg:#0f1720;
+  --card:#0b1220;
+  --accent:#7dd3fc;
+  --text:#e6eef6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,#071021 0%, #0b1220 100%);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.app-header{
+  padding:16px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  background:rgba(255,255,255,0.02);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.app-header h1{
+  margin:0;
+  font-size:18px;
+  letter-spacing:0.06em;
+}
+#search{
+  margin-left:auto;
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  width:45%;
+}
+.song-list{
+  list-style:none;
+  padding:12px;
+  margin:0;
+}
+.song-item{
+  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  cursor:pointer;
+  transition:transform .12s ease;
+}
+.song-item:active{transform:scale(.997)}
+.song-title{font-weight:600}
+.song-sub{font-size:13px;color:rgba(230,238,246,0.7)}
+.modal{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,0.5);
+  padding:16px;
+}
+.modal.hidden{display:none}
+.modal-content{
+  width:100%;
+  max-width:720px;
+  background:var(--card);
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(2,6,23,0.6);
+}
+.close-btn{
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-size:22px;
+  float:right;
+}
+.lyrics-body{
+  margin-top:8px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  max-height:60vh;
+  overflow:auto;
+}
+.link-btn{
+  background:transparent;
+  border:1px solid rgba(125,211,252,0.18);
+  color:var(--accent);
+  padding:8px 12px;
+  border-radius:8px;
+}
+@media(min-width:600px){
+  .modal{align-items:center}
+}
