@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ヨルシカ - Lời bài hát (Mobile)</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="src/css/styles.css" />
 </head>
 <body>
   <header class="app-header">
@@ -13,21 +13,22 @@
   </header>
 
   <main id="main">
-    <ul id="songList" class="song-list"></ul>
+    <ul id="songList" class="song-list" aria-live="polite"></ul>
   </main>
 
   <!-- Modal hiển thị lời -->
-  <div id="lyricsModal" class="modal hidden">
+  <div id="lyricsModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-content">
-      <button id="closeBtn" class="close-btn">×</button>
+      <button id="closeBtn" class="close-btn" aria-label="Đóng">×</button>
       <h2 id="lyricsTitle"></h2>
       <div id="lyricsBody" class="lyrics-body"></div>
       <div class="modal-footer">
-        <button id="openSourceBtn" class="link-btn">Mở nguồn lời (nếu có)</button>
+        <a id="openSourceBtn" class="link-btn" target="_blank" rel="noopener">Mở nguồn</a>
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module" src="src/js/app.js"></script>
 </body>
 </html>
