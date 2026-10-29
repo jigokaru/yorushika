@@ -1,91 +1,296 @@
-// src/js/app.js
-import { loadIndex, loadSongJson } from './lyrics-loader.js';
+const DATA_PATH = "./data";
 
-const songListEl = document.getElementById('songList');
-const searchEl = document.getElementById('search');
-const modal = document.getElementById('lyricsModal');
-const closeBtn = document.getElementById('closeBtn');
-const lyricsTitle = document.getElementById('lyricsTitle');
-const lyricsBody = document.getElementById('lyricsBody');
-const openSourceBtn = document.getElementById('openSourceBtn');
+const app = document.getElementById("app");
 
-let songsMeta = []; // {id,title,excerpt,path,...}
+let currentArtist = null;
+let currentType = null;
 
-async function init() {
-  try {
-    const index = await loadIndex('/data/lyrics/index.json');
-    // index is array of filenames
-    const promises = index.map(fn => loadSongJson(`/data/lyrics/${fn}`).catch(e => null));
-    const results = await Promise.all(promises);
-    songsMeta = results.filter(Boolean).map(s => ({ ...s, path: `/data/lyrics/${s.id || s.title ? s.id + '.json' : ''}` }));
-    // If JSON includes id, we assume file path is /data/lyrics/<filename> from index; to be safe, attach filename:
-    songsMeta = results.filter(Boolean).map((s, i) => ({ ...s, path: `/data/lyrics/${index[i]}` }));
-    renderList();
-  } catch (err) {
-    songListEl.innerHTML = `<li class="song-item">Không tải được danh sách bài hát.</li>`;
-    console.error(err);
-  }
-}
+/* =========================
+   API
+========================= */
 
-function renderList(filter = '') {
-  songListEl.innerHTML = '';
-  const filtered = songsMeta.filter(s => (s.title + ' ' + (s.excerpt||'')).toLowerCase().includes(filter.toLowerCase()));
-  if (filtered.length === 0) {
-    songListEl.innerHTML = `<li class="song-item">Không tìm thấy bài hát.</li>`;
-    return;
-  }
-  filtered.forEach(s => {
-    const li = document.createElement('li');
-    li.className = 'song-item';
-    li.innerHTML = `<div class="song-title">${s.title}</div><div class="song-sub">${s.excerpt || ''}</div>`;
-    li.addEventListener('click', () => openLyrics(s));
-    songListEl.appendChild(li);
-  });
-}
+async function getJSON(path) {
 
-async function openLyrics(songMeta) {
-  lyricsTitle.textContent = songMeta.title;
-  lyricsBody.textContent = 'Đang tải...';
-  openSourceBtn.href = '#';
+    const response = await fetch(path);
 
-  modal.classList.remove('hidden');
-
-  try {
-    // Tải JSON bài hát
-    const data = await loadSongJson(songMeta.path);
-
-    // Lấy nội dung lời
-    const display = data.lyrics || data.excerpt || 'Không có lời hiển thị.';
-
-    const html = display.replace(/\\n/g, '<br>');
-    lyricsBody.innerHTML = html;
-
-
-    // Nút nguồn
-    if (data.sourceUrl) {
-      openSourceBtn.href = data.sourceUrl;
-      openSourceBtn.style.display = 'inline-block';
-    } else {
-      openSourceBtn.style.display = 'none';
+    if (!response.ok) {
+        throw new Error(`Không thể tải: ${path}`);
     }
 
-  } catch (err) {
-    lyricsBody.textContent = 'Không thể tải lời bài hát.';
-    openSourceBtn.style.display = 'none';
-    console.error(err);
-  }
+    return await response.json();
 }
 
+/* =========================
+   RENDER MARKDOWN
+========================= */
 
+function renderLyrics(text) {
 
-function closeModal() {
-  modal.classList.add('hidden');
-  lyricsTitle.textContent = '';
-  lyricsBody.textContent = '';
+    if (!text) {
+        return "Không có lời bài hát.";
+    }
+
+    return text
+
+        .replace(/\\n/g, "\n")
+
+        .replace(/^### (.*)$/gm,
+            "<h3>$1</h3>"
+        )
+
+        .replace(/^## (.*)$/gm,
+            "<h2>$1</h2>"
+        )
+
+        .replace(/^# (.*)$/gm,
+            "<h1>$1</h1>"
+        )
+
+        .replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        )
+
+        .replace(/\n/g, "<br>");
 }
 
-closeBtn.addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-searchEl.addEventListener('input', (e) => renderList(e.target.value));
+/* =========================
+   DANH SÁCH NGHỆ SĨ
+========================= */
 
-init();
+async function showArtists() {
+
+    const artists = await getJSON(
+        `${DATA_PATH}/artists/index.json`
+    );
+
+    app.innerHTML = `
+        <section class="view">
+
+            <h2>🎤 Nghệ sĩ / Nhóm nhạc</h2>
+
+            <div id="artistList"></div>
+
+        </section>
+    `;
+
+    const artistList =
+        document.getElementById("artistList");
+
+    artists.forEach(artist => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>${artist.name}</h3>
+        `;
+
+        card.onclick = () => {
+
+            currentArtist = artist;
+
+            showArtistMenu();
+        };
+
+        artistList.appendChild(card);
+    });
+}
+
+/* =========================
+   MENU NGHỆ SĨ
+========================= */
+
+function showArtistMenu() {
+
+    app.innerHTML = `
+        <section class="view">
+
+            <button id="backArtistList">
+                ← Nghệ sĩ
+            </button>
+
+            <h2>${currentArtist.name}</h2>
+
+            <div class="menu-grid">
+
+                <div class="card" id="albumsBtn">
+                    📀 Album
+                </div>
+
+                <div class="card" id="epsBtn">
+                    💿 EP
+                </div>
+
+                <div class="card" id="singlesBtn">
+                    🎵 Single
+                </div>
+
+            </div>
+
+        </section>
+    `;
+
+    document
+        .getElementById("backArtistList")
+        .onclick = showArtists;
+
+    document
+        .getElementById("albumsBtn")
+        .onclick = () =>
+            showReleaseList("albums");
+
+    document
+        .getElementById("epsBtn")
+        .onclick = () =>
+            showReleaseList("eps");
+
+    document
+        .getElementById("singlesBtn")
+        .onclick = () =>
+            showReleaseList("singles");
+}
+
+/* =========================
+   DANH SÁCH ALBUM / EP / SINGLE
+========================= */
+
+async function showReleaseList(type) {
+
+    currentType = type;
+
+    const releases = await getJSON(
+        `${DATA_PATH}/artists/${currentArtist.id}/${type}.json`
+    );
+
+    app.innerHTML = `
+        <section class="view">
+
+            <button id="backArtist">
+                ← Quay lại
+            </button>
+
+            <h2>${type.toUpperCase()}</h2>
+
+            <div id="releaseList"></div>
+
+        </section>
+    `;
+
+    document
+        .getElementById("backArtist")
+        .onclick = showArtistMenu;
+
+    const releaseList =
+        document.getElementById("releaseList");
+
+    releases.forEach(release => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>${release.title}</h3>
+            <small>${release.year || ""}</small>
+        `;
+
+        card.onclick = () =>
+            showRelease(release);
+
+        releaseList.appendChild(card);
+    });
+}
+
+/* =========================
+   CHI TIẾT ALBUM / EP / SINGLE
+========================= */
+
+async function showRelease(release) {
+
+    const data = await getJSON(
+        `${DATA_PATH}/artists/${currentArtist.id}/${currentType}/${release.id}.json`
+    );
+
+    // Trường hợp Single chỉ có 1 bài
+    if (currentType === "singles") {
+
+        showLyrics(data, release);
+        return;
+    }
+
+    app.innerHTML = `
+        <section class="view">
+
+            <button id="backRelease">
+                ← Quay lại
+            </button>
+
+            <h2>${data.title}</h2>
+
+            <div id="songList"></div>
+
+        </section>
+    `;
+
+    document
+        .getElementById("backRelease")
+        .onclick = () =>
+            showReleaseList(currentType);
+
+    const songList =
+        document.getElementById("songList");
+
+    data.songs.forEach(song => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>${song.title}</h3>
+        `;
+
+        card.onclick = () =>
+            showLyrics(song, release);
+
+        songList.appendChild(card);
+    });
+}
+/* =========================
+   HIỂN THỊ LỜI BÀI HÁT
+========================= */
+
+function showLyrics(song, release) {
+
+    app.innerHTML = `
+        <section class="view">
+
+            <button id="backSongs">
+                ← Quay lại
+            </button>
+
+            <h2>${song.title}</h2>
+
+            <div class="lyrics">
+                ${renderLyrics(song.lyrics)}
+            </div>
+
+        </section>
+    `;
+
+    document
+        .getElementById("backSongs")
+        .onclick = () =>
+            showRelease(release);
+}
+
+/* =========================
+   START
+========================= */
+
+showArtists();

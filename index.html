@@ -1,34 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ヨルシカ - Lời bài hát (Mobile)</title>
-  <link rel="stylesheet" href="src/css/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics Library</title>
+
+    <link rel="stylesheet" href="./src/css/styles.css">
 </head>
+
 <body>
-  <header class="app-header">
-    <h1>ヨルシカ</h1>
-    <input id="search" type="search" placeholder="Tìm bài hát..." />
-  </header>
 
-  <main id="main">
-    <ul id="songList" class="song-list" aria-live="polite"></ul>
-  </main>
+    <header class="topbar">
+        <h1>🎵 Lyrics Library</h1>
+    </header>
 
-  <!-- Modal hiển thị lời -->
-  <div id="lyricsModal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <button id="closeBtn" class="close-btn" aria-label="Đóng">×</button>
-      <h2 id="lyricsTitle"></h2>
-      <div id="lyricsBody" class="lyrics-body"></div>
-      <div class="modal-footer">
-        <a id="openSourceBtn" class="link-btn" target="_blank" rel="noopener">Mở nguồn</a>
-      </div>
-    </div>
-  </div>
+    <main id="app">
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script type="module" src="src/js/app.js"></script>
+        <!-- ARTISTS -->
+        <section id="artists-view" class="view">
+            <h2>Nghệ sĩ / Nhóm nhạc</h2>
+
+            <div id="artistList"></div>
+        </section>
+
+        <!-- CATEGORY -->
+        <section id="category-view" class="view hidden">
+            <button id="backArtist">
+                ← Quay lại
+            </button>
+
+            <h2 id="artistName"></h2>
+
+            <div class="menu-grid">
+                <div id="albumsBtn" class="card">
+                    📀 Album
+                </div>
+
+                <div id="epsBtn" class="card">
+                    💿 EP
+                </div>
+
+                <div id="singlesBtn" class="card">
+                    🎵 Single
+                </div>
+            </div>
+        </section>
+
+        <!-- RELEASES -->
+        <section id="release-view" class="view hidden">
+            <button id="backCategory">
+                ← Quay lại
+            </button>
+
+            <h2 id="releaseTitle"></h2>
+
+            <div id="releaseList"></div>
+        </section>
+
+        <!-- SONGS -->
+        <section id="songs-view" class="view hidden">
+            <button id="backRelease">
+                ← Quay lại
+            </button>
+
+            <h2 id="songsTitle"></h2>
+
+            <div id="songList"></div>
+        </section>
+
+        <!-- LYRICS -->
+        <section id="lyrics-view" class="view hidden">
+            <button id="backSongs">
+                ← Quay lại
+            </button>
+
+            <h2 id="lyricsTitle"></h2>
+
+            <div id="lyricsBody" class="lyrics"></div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <small>Lyrics Library © 2025</small>
+    </footer>
+
+    <script type="module" src="./src/js/app.js"></script>
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 </html>

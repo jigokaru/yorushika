@@ -1,0 +1,28 @@
+[
+{
+  "id": "plagiarism",
+  "title": "盗作",
+  "year": 2020,
+  "cover": "plagiarism.jpg"
+  
+},
+
+    {
+        "id": "elma",
+        "title": "エルマ",
+        "year": 2019,
+        "cover": "elma.jpg"
+    },
+    {
+        "id": "dakaraboku",
+        "title": "だから僕は音楽を辞めた",
+        "year": 2019,
+        "cover": "dakaraboku.jpg"
+    },
+    {
+        "id": "nininshou",
+        "title": "二人称",
+        "year": 2026,
+        "cover": "nininshou.jpg"
+    }
+]

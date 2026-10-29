@@ -1,103 +1,413 @@
-:root{
-  --bg:#0f1720;
-  --card:#0b1220;
-  --accent:#7dd3fc;
-  --text:#e6eef6;
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
-*{box-sizing:border-box}
+
+html{
+    scroll-behavior:smooth;
+}
+
 body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-  background:linear-gradient(180deg,#071021 0%, #0b1220 100%);
-  color:var(--text);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
+    font-family:
+        "Segoe UI",
+        system-ui,
+        sans-serif;
+
+    background:#0f1117;
+    color:#ffffff;
+
+    min-height:100vh;
 }
-.app-header{
-  padding:14px;
-  display:flex;
-  gap:12px;
-  align-items:center;
-  background:rgba(255,255,255,0.02);
-  position:sticky;
-  top:0;
-  z-index:10;
+
+/* =========================
+   VARIABLES
+========================= */
+
+:root{
+
+    --bg:#0f1117;
+
+    --card:#1a1d29;
+
+    --card-hover:#252938;
+
+    --border:#2e3448;
+
+    --primary:#7aa2ff;
+
+    --text:#ffffff;
+
+    --text-secondary:#aeb7c7;
+
+    --shadow:
+        0 4px 20px rgba(0,0,0,.25);
 }
-.app-header h1{
-  margin:0;
-  font-size:18px;
-  letter-spacing:0.06em;
+
+/* =========================
+   HEADER
+========================= */
+
+.topbar{
+
+    position:sticky;
+    top:0;
+
+    z-index:100;
+
+    background:#171a24;
+
+    border-bottom:1px solid var(--border);
+
+    padding:16px;
+
+    text-align:center;
 }
-#search{
-  margin-left:auto;
-  padding:8px 12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.06);
-  background:rgba(255,255,255,0.02);
-  color:var(--text);
-  width:48%;
+
+.topbar h1{
+
+    font-size:1.2rem;
+
+    font-weight:700;
+
+    color:var(--text);
 }
-.song-list{
-  list-style:none;
-  padding:12px;
-  margin:0;
+
+/* =========================
+   MAIN
+========================= */
+
+#app{
+
+    max-width:900px;
+
+    margin:auto;
+
+    padding:16px;
 }
-.song-item{
-  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  cursor:pointer;
-  transition:transform .12s ease;
+
+.view{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
 }
-.song-item:active{transform:scale(.997)}
-.song-title{font-weight:600}
-.song-sub{font-size:13px;color:rgba(230,238,246,0.7)}
-.modal{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  background:rgba(0,0,0,0.5);
-  padding:16px;
+
+.hidden{
+
+    display:none;
 }
-.modal.hidden{display:none}
-.modal-content{
-  width:100%;
-  max-width:720px;
-  background:var(--card);
-  border-radius:14px;
-  padding:16px;
-  box-shadow:0 10px 30px rgba(2,6,23,0.6);
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+
+    text-align:center;
+
+    margin-top:50px;
+
+    color:var(--text-secondary);
 }
-.close-btn{
-  background:transparent;
-  border:none;
-  color:var(--text);
-  font-size:22px;
-  float:right;
+
+.loading h2{
+
+    margin-bottom:8px;
 }
-.lyrics-body{
-  margin-top:8px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  max-height:60vh;
-  overflow:auto;
+
+/* =========================
+   BUTTON
+========================= */
+
+button{
+
+    cursor:pointer;
+
+    border:none;
 }
-.link-btn{
-  display:inline-block;
-  margin-top:10px;
-  background:transparent;
-  border:1px solid rgba(125,211,252,0.18);
-  color:var(--accent);
-  padding:8px 12px;
-  border-radius:8px;
-  text-decoration:none;
+
+#backArtist,
+#backCategory,
+#backRelease,
+#backSongs{
+
+    width:fit-content;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    background:var(--card);
+
+    color:white;
+
+    border:1px solid var(--border);
+
+    transition:.2s;
 }
-@media(min-width:600px){
-  .modal{align-items:center}
+
+#backArtist:hover,
+#backCategory:hover,
+#backRelease:hover,
+#backSongs:hover{
+
+    background:var(--card-hover);
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:18px;
+
+    cursor:pointer;
+
+    transition:
+        .2s ease;
+}
+
+.card:hover{
+
+    background:var(--card-hover);
+
+    transform:translateY(-2px);
+}
+
+.card:active{
+
+    transform:scale(.98);
+}
+
+.card h3{
+
+    margin-bottom:6px;
+}
+
+.card small{
+
+    color:var(--text-secondary);
+}
+
+/* =========================
+   ARTIST LIST
+========================= */
+
+#artistList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+/* =========================
+   MENU GRID
+========================= */
+
+.menu-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+}
+
+.menu-grid .card{
+
+    text-align:center;
+
+    font-size:1.1rem;
+
+    font-weight:600;
+}
+
+/* =========================
+   RELEASE LIST
+========================= */
+
+#releaseList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+/* =========================
+   SONG LIST
+========================= */
+
+#songList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+#songList .card{
+
+    padding:14px 18px;
+}
+
+/* =========================
+   LYRICS
+========================= */
+
+.lyrics{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    line-height:1.9;
+
+    white-space:pre-wrap;
+
+    word-wrap:break-word;
+
+    overflow-x:hidden;
+}
+
+.lyrics h1,
+.lyrics h2,
+.lyrics h3{
+
+    margin-top:15px;
+
+    margin-bottom:10px;
+
+    color:var(--primary);
+}
+
+.lyrics strong{
+
+    color:#ffd369;
+}
+
+.lyrics p{
+
+    margin-bottom:10px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+
+    margin-top:40px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:var(--text-secondary);
+
+    border-top:1px solid var(--border);
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar{
+
+    width:8px;
+}
+
+::-webkit-scrollbar-track{
+
+    background:#111;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#444;
+
+    border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#666;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    #app{
+
+        padding:12px;
+    }
+
+    .menu-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .topbar h1{
+
+        font-size:1rem;
+    }
+
+    .card{
+
+        padding:14px;
+    }
+
+    .lyrics{
+
+        padding:15px;
+
+        font-size:.95rem;
+    }
+}
+#backArtistList,
+#backToArtist,
+#backReleaseList,
+#backSongs {
+
+    position: sticky;
+
+    top: 70px;
+
+    z-index: 999;
+
+    background: #1a1d29;
+
+    border: 1px solid #2e3448;
+
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    margin-bottom: 10px;
 }
