@@ -284,9 +284,16 @@ function showLyrics(song, release) {
     `;
 
     document
-        .getElementById("backSongs")
-        .onclick = () =>
+    .getElementById("backSongs")
+    .onclick = () => {
+
+        if (currentType === "singles") {
+            showReleaseList(currentType);
+        } else {
             showRelease(release);
+        }
+
+    };
 }
 
 /* =========================
